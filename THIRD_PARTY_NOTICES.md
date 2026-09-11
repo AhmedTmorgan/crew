@@ -11,6 +11,11 @@ License, as declared in its `SKILL.md` frontmatter (`license: MIT`).
 | `skills/debate-review` | https://github.com/amElnagdy/review-skills | Ahmed Nagdy | `scripts/lib/dispatch.mjs` also searches the plugin's own `skills/` folder, so the bundled relays are found without a separate install |
 | `skills/babysit-pr` | https://github.com/amElnagdy/review-skills | Ahmed Nagdy | none |
 
+`skills/intake` adapts the interview method of Matt Pocock's `grilling` skill
+(https://github.com/mattpocock/skills, MIT, © Matt Pocock): the design tree, the frontier, round-based
+numbered questions with a recommended answer each, and the facts-versus-decisions split. The text is
+rewritten for crew, and crew adds the decision ledger in the task brief.
+
 The MIT License text:
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
