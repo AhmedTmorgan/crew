@@ -106,8 +106,10 @@ earlier answers.>
   - acceptance criteria
   - rollout, flags, and backwards compatibility
 - If the user wants one question at a time, do that instead.
-- If the effort is clearly too big for one session (several features, weeks of work), say so after
-  round 1. Propose phases, and run intake for the first phase only.
+- Grill the **whole** feature, however big. This is the only planned conversation before an
+  autonomous run that may last hours, so every decision the build needs is taken here. crew:tickets
+  splits the work afterwards. Only when the request bundles several unrelated products, propose
+  separate runs.
 
 ## 5. Readiness check
 
@@ -137,5 +139,5 @@ their language:
 - the main risks
 
 End with one question: go, or change something. Only an explicit go ends intake. Write
-`Approved: <date>` at the top of the brief, then hand control back (to crew:feature step 2, or to
-the user if intake ran on its own).
+`Approved: <date>` at the top of the brief, then continue with `crew:spec`. If intake ran on its
+own, hand back to the user instead.

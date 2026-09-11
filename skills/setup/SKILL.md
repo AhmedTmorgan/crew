@@ -45,6 +45,10 @@ best evidence of which gates the project actually trusts.
 - `baseBranch`: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`.
 - `guard.askPatterns`: extra command substrings that must always prompt the user (production
   scripts, production DB CLIs). `guard.denyPatterns`: substrings that must never run.
+- `limits.parallel`: how many tickets `crew:run` builds at once (default 3). Lower it on a slow
+  machine, or when every worktree needs a heavy `install`.
+- `tracker`: `local` (the default: tickets are files) or `github` (also mirror the spec and tickets
+  as issues).
 
 ## 3. Write the config
 

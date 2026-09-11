@@ -5,7 +5,8 @@ description: >-
   push, open a PR, watch CI, and fix failures until green. Stage "release", only after the user
   explicitly approves in chat: merge, run the project's production migrations and deploy command,
   verify the live site, record problems in BUGS.md, and clean up branches and worktrees. Use for
-  "ارفع الشغل", "push", "open a PR", "ship it", "deploy", or as steps 10–12 of crew:feature.
+  "ارفع الشغل", "push", "open a PR", "ship it", "deploy", or as the ship and release phases of
+  crew:run.
 argument-hint: "[pr | release] [branch or PR number]"
 ---
 

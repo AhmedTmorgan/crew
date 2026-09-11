@@ -2,6 +2,7 @@
   "version": "crew.v1",
   "bugsFile": "BUGS.md",
   "baseBranch": null,
+  "tracker": "local",
   "commands": {
     "install": null,
     "typecheck": null,
@@ -23,11 +24,17 @@
     "frontend": { "implementer": "agent", "agent": "crew:frontend-builder" },
     "integrator": { "implementer": "agent", "agent": "crew:frontend-builder" },
     "review": { "implementer": "codex", "model": "gpt-6-astra", "effort": "high", "fallback": "crew:reviewer" },
+    "finalReview": { "implementer": "codex", "model": "gpt-6-astra", "effort": "xhigh", "fallback": "crew:reviewer" },
+    "escalation": { "implementer": "codex", "model": "gpt-6-astra", "effort": "xhigh", "fallback": "crew:backend-builder" },
     "migrations": { "implementer": "agent", "agent": "crew:migration-runner" }
   },
   "limits": {
-    "reworkRounds": 2,
-    "reviewRounds": 2,
+    "parallel": 3,
+    "fixRounds": 5,
     "ciFixRounds": 3
+  },
+  "keepGoing": {
+    "maxNoProgress": 3,
+    "maxContinuations": 300
   }
 }
