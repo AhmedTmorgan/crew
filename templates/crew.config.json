@@ -1,0 +1,33 @@
+{
+  "version": "crew.v1",
+  "bugsFile": "BUGS.md",
+  "baseBranch": null,
+  "commands": {
+    "install": null,
+    "typecheck": null,
+    "lint": null,
+    "test": null,
+    "build": null,
+    "migrateDev": null,
+    "migrateProd": null,
+    "deploy": null,
+    "verifyUrl": null
+  },
+  "guard": {
+    "askPatterns": [],
+    "denyPatterns": []
+  },
+  "roles": {
+    "orchestrator": { "implementer": "main", "model": "claude-fable-5-1", "effort": "medium" },
+    "backend": { "implementer": "codex", "model": "gpt-5.6-sol", "effort": "high", "fallback": "crew:backend-builder" },
+    "frontend": { "implementer": "agent", "agent": "crew:frontend-builder" },
+    "integrator": { "implementer": "agent", "agent": "crew:frontend-builder" },
+    "review": { "implementer": "codex", "model": "gpt-6-astra", "effort": "high", "fallback": "crew:reviewer" },
+    "migrations": { "implementer": "agent", "agent": "crew:migration-runner" }
+  },
+  "limits": {
+    "reworkRounds": 2,
+    "reviewRounds": 2,
+    "ciFixRounds": 3
+  }
+}

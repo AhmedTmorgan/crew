@@ -1,0 +1,14 @@
+{
+  "name": "crew",
+  "owner": { "name": "Ahmed (AhmedTmorgan)" },
+  "metadata": {
+    "description": "crew: a multi-model engineering team plugin for Claude Code, with a per-project problem journal."
+  },
+  "plugins": [
+    {
+      "name": "crew",
+      "source": "./",
+      "description": "Multi-model engineering team: intake → plan → parallel build (Codex + Opus) → cross-model review → migrations → PR/CI → approved deploy, with a per-project problem journal."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "crew",
+  "displayName": "crew",
+  "version": "0.1.0",
+  "description": "A multi-model engineering team for Claude Code: Fable understands and plans, Codex and Opus build in parallel worktrees, a different model reviews, Opus runs migrations, and work ships through PR + CI with the owner approving every deploy. Every session keeps one problem journal (BUGS.md) per project.",
+  "author": { "name": "Ahmed (AhmedTmorgan)" },
+  "license": "MIT",
+  "keywords": ["orchestration", "multi-agent", "codex", "workflow", "code-review", "github", "bugs"]
+}
