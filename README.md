@@ -25,6 +25,10 @@ If Codex is out of limit, too old, or logged out, crew notices before the run st
 role to a Claude agent. Every fallback, and every decision it takes on your behalf (a "Ruling"), is
 listed in the final report.
 
+> **Status: early (v0.2).** The building blocks are tested on their own: the journal, the ticket
+> graph, the keep-going hook, the guard, and Codex routing and fallback. Full end-to-end runs on real
+> projects are just starting. Expect rough edges, and please open an issue when you hit one.
+
 ## Install
 
 ```text
