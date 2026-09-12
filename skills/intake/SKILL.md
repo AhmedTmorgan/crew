@@ -82,6 +82,12 @@ earlier answers.>
   against the question's wording, confirm which way the answer goes before recording it.
 - Ask in the user's language (Egyptian Arabic if they write it). Keep code terms and identifiers in
   English.
+- **If the user writes an RTL language, read
+  [`${CLAUDE_PLUGIN_ROOT}/references/rtl-output.md`](../../references/rtl-output.md) before the
+  first round and follow it.** Mixed Arabic and Latin on one line is reordered by the terminal and
+  arrives scrambled, which costs a whole round: start every Arabic line with an Arabic word, keep
+  one direction per line, put ids and numbers in backticks at the end of a line or in their own
+  table column, and never put `—` between Arabic and Latin.
 - **Facts don't block a round.** If a question needs something the repo, tools, or docs can settle,
   dispatch a subagent for it and ask the rest of the frontier now. Only the questions downstream of
   a running lookup wait.

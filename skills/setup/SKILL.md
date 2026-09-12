@@ -118,6 +118,21 @@ The skills carry the detail.
   after the owner approves in chat.
 ```
 
+**If the owner writes to Claude in an RTL language** (check `git log` messages, the issue tracker,
+or how they talk in this session), add this too — mixed-direction lines arrive scrambled on their
+screen, and every crew question round and report is full of ids and numbers:
+
+```markdown
+- Writing to the owner in Arabic: start every Arabic line with an Arabic word (never an id, a
+  version, or a digit), keep one direction per line, put identifiers in backticks at the end of the
+  line or in their own table column, and never put an em dash between Arabic and Latin text.
+```
+
+The full version, with a worked question round, is in
+`${CLAUDE_PLUGIN_ROOT}/references/rtl-output.md`. Offer to put the same rules in the owner's
+`~/.claude/CLAUDE.md`, where they apply to every project, not just this one — and only write that
+file if they say yes.
+
 ## 6. Report
 
 Tell the user in their language:

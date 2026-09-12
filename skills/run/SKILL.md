@@ -272,7 +272,9 @@ When it holds:
 4. **Ship:** `node "$T" run phase ship`, then `crew:ship` stage `pr`: push, PR, and the CI fix
    loop. Before a long CI watch, run `node "$T" run wait --reason "CI on PR #N"`.
 5. **Hand over:** `node "$T" run phase awaiting-approval`. The keep-going hook lets the session stop
-   here. The final report, in the user's language, covers:
+   here. Write the final report in the user's language — and if that language is RTL, follow
+   [`${CLAUDE_PLUGIN_ROOT}/references/rtl-output.md`](../../references/rtl-output.md), because a
+   report full of ticket ids and token counts is exactly what the terminal scrambles. It covers:
    - what was built, ticket by ticket
    - **"Rulings I made":** every `Ruling:` line from the ledger, in order, each with what it costs if
      wrong
