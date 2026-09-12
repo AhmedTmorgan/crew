@@ -84,6 +84,11 @@ finished work.
 5. Record the base commit: `node "$T" note "base <sha7>, integration tree $W/<slug>"`.
 6. Probe the Codex roles with `node "$C" --probe`, and record the routing in the ledger. Any Codex
    role that isn't ok uses its fallback agent for the whole run. Tell the user in one line.
+   **A passing probe is not a promise of quota.** It proves the CLI, auth and model are reachable;
+   a real turn can still hit the account's usage limit on its first message. When it does, the
+   verdict carries `kind: usage_limit` and a `fallback`, and crew remembers the reset time — later
+   dispatches of that model return the fallback in milliseconds. Switch the role for the rest of
+   the run, ledger it as a ruling, and say so in the final report.
 
 **Resume** (new session, "كمّل", or after a pause):
 1. `node "$T" run resume --task <slug>`. This rebinds the run to this session.

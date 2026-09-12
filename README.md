@@ -21,9 +21,12 @@ you ─▶ intake (Fable 5.1: numbered question rounds, a recommendation on each
       ⛔ you approve  →  prod migrations  →  merge  →  deploy  →  verify  →  clean up
 ```
 
-If Codex is out of limit, too old, or logged out, crew notices before the run starts and hands that
-role to a Claude agent. Every fallback, and every decision it takes on your behalf (a "Ruling"), is
-listed in the final report.
+If Codex is missing, outdated, logged out, or out of quota, that role goes to a Claude agent
+instead. A preflight probe catches the first three; **quota it cannot catch** — a tiny probe passes
+while a real turn hits the account limit — so the first dispatch that hits a limit is remembered
+with its reset time, and every later dispatch of that model takes the fallback immediately instead
+of spending a turn to rediscover it (`codex-run.mjs --limits` / `--clear-limits`). Every fallback,
+and every decision crew takes on your behalf (a "Ruling"), is in the final report.
 
 > **Status: early (v0.2).** The building blocks are tested on their own: the journal, the ticket
 > graph, the keep-going hook, the guard, and Codex routing and fallback. Full end-to-end runs on real
