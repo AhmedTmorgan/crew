@@ -5,7 +5,7 @@ description: >-
   its assigned worktree against the agreed contract. "integrate" mode merges a ticket branch into
   the feature branch and resolves conflicts. "fix" mode applies review or CI findings. Dispatched by
   crew:run with a written brief; not for ad-hoc use.
-model: claude-sonnet-5
+model: claude-opus-5
 effort: high
 maxTurns: 150
 color: blue

@@ -5,7 +5,7 @@ description: >-
   unavailable (usage limit, outdated CLI, auth, or missing model), when a project maps the backend
   role to Claude, or as the fresh implementer that escalates a stuck fix loop. Implements server
   code, APIs, and migration files in its assigned worktree from a crew brief. Not for ad-hoc use.
-model: claude-sonnet-5
+model: claude-opus-5
 effort: high
 maxTurns: 150
 color: green

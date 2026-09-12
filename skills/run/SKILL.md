@@ -294,15 +294,29 @@ Measured on the first real run (7 tickets, 5 finished, 326M tokens): **implement
 bill, the orchestrator 28%, and every review together 4%.** One implementer alone burned 85M in 308
 turns. So the dial that matters is the implementer's model and how long it runs — not the reviews.
 
-- **Pick the implementer's model by the ticket's Size**, from `models.implementerBySize`
-  (default: S and M → Sonnet, L → Opus), and the reviewer's from `models.reviewerBySize`. Pass the
-  model explicitly on every dispatch; never leave a subagent on the session default, which is the
-  most expensive model you have.
+**Turn the effort dial, not the model dial.** The levers in order, cheapest quality cost first:
+
+1. **Codex when it has quota** — backend tickets on Sol spend none of the Claude budget at all.
+2. **Fewer turns** — `crew:context-economy`: LSP symbols instead of whole files, the run's shared
+   notes instead of re-exploring, small tickets instead of 300-turn sessions. This cuts cost without
+   touching quality.
+3. **Effort per ticket size** — `models.implementerBySize` (S → medium, M → high, L → xhigh) on the
+   strongest model. Lower effort on the newest model beats an older or smaller model at high effort,
+   and it keeps one cache namespace.
+4. **A smaller model, last and only where it is safe** — genuinely mechanical work (the same small
+   edit across several files). On a codebase with real conventions a weaker implementer buys one
+   more fix round, and a fix round costs another implementer session plus a review: more than it
+   saved, for worse code.
+
+- **Pick the implementer's model and effort by the ticket's Size**, from `models.implementerBySize`,
+  and the reviewer's from `models.reviewerBySize`. Pass both explicitly on every dispatch; never
+  leave a subagent on the session default.
 - **The reviewer is never weaker than the implementer.** Independence comes from a different model
   *family* — Codex `gpt-6-astra` reviewing Claude's work — not from an older Claude. A previous
   generation of the same family (Opus 4.8 against Opus 5) is a downgrade at identical price, not a
   second opinion. When Codex is unavailable, review at the implementer's tier or one above it:
-  Sonnet implementation → Sonnet or Opus review; Opus implementation → Opus review, never below.
+  a Sonnet implementation may be reviewed by Sonnet or above; an Opus implementation is reviewed by
+  Opus or above, never below.
 - **Escalate on evidence, not on a hunch:** a ticket that comes back BLOCKED, or fails its second
   fix round, earns the next model up. Record the escalation as a ruling.
 - **`limits.maxAgentTurns` (120) is a sizing signal, not a budget to spend.** An implementer still

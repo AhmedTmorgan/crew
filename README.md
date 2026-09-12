@@ -108,16 +108,23 @@ tickets finished in 14.6 hours — billed **326M tokens**:
 | Every review together (8 agents) | 10M | **4%** |
 
 One oversized ticket took 308 turns and 85M tokens by itself — a quarter of the run. **Reviews are
-cheap; long implementer sessions are not.** That is why crew now picks the implementer's model from
-the ticket's size, explores the codebase once per run instead of once per agent, and treats a ticket
-that outgrows ~100 tool calls as a sizing mistake to split rather than a session to extend.
+cheap; long implementer sessions are not.**
 
-What crew does about it: the ticket's size picks the implementer's model, the codebase is explored
-once per run instead of once per agent, and implementers are told to find code with the built-in
-`LSP` tool (symbols, references, ranged reads) rather than opening whole files — `documentSymbol` on
-an 806-line file replaces ~8,600 tokens of source with a symbol map. Install the language-server
-plugin for your stack (`typescript-lsp`, `pyright-lsp`, `gopls-lsp`, …); `crew:setup` checks for it.
-The rules are in `/crew:context-economy`.
+What crew does about it, cheapest quality cost first:
+
+1. **Codex when it has quota** — backend tickets spend none of the Claude budget.
+2. **Fewer turns, same model** — implementers find code with the built-in `LSP` tool (symbols,
+   references, ranged reads) instead of opening whole files (`documentSymbol` on an 806-line file
+   replaces ~8,600 tokens of source with a symbol map), the codebase is explored once per run
+   instead of once per agent, and a ticket that outgrows ~100 tool calls is split rather than
+   extended. Install the language-server plugin for your stack (`typescript-lsp`, `pyright-lsp`,
+   `gopls-lsp`, …); `crew:setup` checks for it. The rules are in `/crew:context-economy`.
+3. **Effort by ticket size** — S → medium, M → high, L → xhigh, on the strongest model. Lower effort
+   on the newest model beats an older or smaller model at high effort, and it keeps one cache
+   namespace.
+4. **A smaller model only for mechanical work.** Crew does not downgrade the implementer by default:
+   on a codebase with real conventions a weaker model buys an extra fix round — another implementer
+   session plus a review — which costs more than it saved, for worse code.
 
 Use it accordingly:
 - **Worth it** for work with several independent slices, where review and a written record matter,
