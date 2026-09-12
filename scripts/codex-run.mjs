@@ -48,7 +48,11 @@ const FALLBACK_KINDS = new Set(['usage_limit', 'outdated_cli', 'auth', 'model_un
 // ---------- remembered usage limits ----------
 // The limit belongs to the account, not to one project, so it lives in the user's Claude directory.
 const LIMITS_FILE = path.join(os.homedir(), '.claude', 'crew-codex-limits.json');
-const DEFAULT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
+// The provider's stated reset time is not reliable: on 2026-09-11 Codex said "try again at Sep 15"
+// and the quota was back the next morning. So a remembered limit is a short cooldown that doubles
+// if the limit is still there, never a multi-day lockout — it must heal on its own.
+const FIRST_COOLDOWN_MS = 20 * 60 * 1000;
+const MAX_COOLDOWN_MS = 4 * 60 * 60 * 1000;
 
 /** "try again at Sep 15th, 2026 11:19 AM" → a Date, or null when the message says nothing usable. */
 function parseResetTime(text) {
@@ -81,9 +85,18 @@ const activeLimit = model => (model ? readLimits()[model] : null);
 
 function rememberLimit(model, detail) {
   if (!model) return;
-  const until = parseResetTime(detail) || new Date(Date.now() + DEFAULT_COOLDOWN_MS);
   const data = readLimits();
-  data[model] = { until: until.toISOString(), noticedAt: new Date().toISOString(), detail: String(detail).slice(0, 300) };
+  const previous = data[model];
+  // Back off further each time the limit is still there; cap it, and never wait past the provider's
+  // own reset time when it gives one.
+  const cooldown = Math.min(previous ? (previous.cooldownMs || FIRST_COOLDOWN_MS) * 2 : FIRST_COOLDOWN_MS, MAX_COOLDOWN_MS);
+  const stated = parseResetTime(detail);
+  const until = new Date(Math.min(Date.now() + cooldown, stated ? stated.getTime() : Infinity));
+  data[model] = {
+    until: until.toISOString(), cooldownMs: cooldown, attempts: (previous?.attempts || 0) + 1,
+    statedReset: stated ? stated.toISOString() : null, noticedAt: new Date().toISOString(),
+    detail: String(detail).slice(0, 300),
+  };
   writeLimits(data);
 }
 

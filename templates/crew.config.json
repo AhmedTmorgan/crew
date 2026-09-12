@@ -32,7 +32,21 @@
   "limits": {
     "parallel": 3,
     "fixRounds": 5,
-    "ciFixRounds": 3
+    "ciFixRounds": 3,
+    "maxAgentTurns": 120
+  },
+  "//models": "Implementer model and effort per ticket Size. Measured on the first real run: implementers were 69% of the whole token bill and reviewers 4%, so this table is the main cost dial. A ticket that needs more than limits.maxAgentTurns was sized wrong — split it instead of buying a bigger model.",
+  "models": {
+    "implementerBySize": {
+      "S": { "model": "sonnet", "effort": "medium" },
+      "M": { "model": "sonnet", "effort": "high" },
+      "L": { "model": "opus", "effort": "high" }
+    },
+    "reviewerBySize": {
+      "S": { "model": "sonnet", "effort": "medium" },
+      "M": { "model": "opus", "effort": "high" },
+      "L": { "model": "opus", "effort": "high" }
+    }
   },
   "keepGoing": {
     "maxNoProgress": 3,

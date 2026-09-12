@@ -95,6 +95,29 @@ Only the keys you change are needed. The defaults are in
 }
 ```
 
+## What it costs, measured
+
+The first real run — a 7-ticket WhatsApp template feature on a large Next.js/Supabase codebase, 5
+tickets finished in 14.6 hours — billed **326M tokens**:
+
+| | tokens | share |
+|---|---|---|
+| Implementers (7 agents) | 226M | **69%** |
+| Orchestrator | 92M | 28% |
+| Every review together (8 agents) | 10M | **4%** |
+
+One oversized ticket took 308 turns and 85M tokens by itself — a quarter of the run. **Reviews are
+cheap; long implementer sessions are not.** That is why crew now picks the implementer's model from
+the ticket's size, explores the codebase once per run instead of once per agent, and treats a ticket
+that outgrows ~100 tool calls as a sizing mistake to split rather than a session to extend.
+
+Use it accordingly:
+- **Worth it** for work with several independent slices, where review and a written record matter,
+  and where you want it to keep going while you sleep.
+- **Not worth it** for a one-file fix or a quick question. A normal session is cheaper and faster.
+- Parallelism buys wall-clock, not tokens: three agents at once reach a usage limit three times
+  sooner. Lower `limits.parallel` when quota matters more than speed.
+
 ## The problem journal (`BUGS.md`)
 
 There is one file per project, however large, managed by `scripts/bugs.mjs`. Entries have permanent

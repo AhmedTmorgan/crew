@@ -82,7 +82,11 @@ finished work.
 3. `git worktree add "$W/<slug>" -b crew/<slug> origin/<base>`: the integration tree.
 4. Install dependencies there if the gates need them.
 5. Record the base commit: `node "$T" note "base <sha7>, integration tree $W/<slug>"`.
-6. Probe the Codex roles with `node "$C" --probe`, and record the routing in the ledger. Any Codex
+6. **Explore once, for every agent.** Send one `Explore` subagent per area the spec touches (in
+   parallel, cheap model) and have each write `TASK/notes/<area>.md`: the files that matter, the
+   patterns to follow, the traps, the existing tests. Every brief points at these notes, so no
+   implementer pays to rediscover the same code.
+7. Probe the Codex roles with `node "$C" --probe`, and record the routing in the ledger. Any Codex
    role that isn't ok uses its fallback agent for the whole run. Tell the user in one line.
    **A passing probe is not a promise of quota.** It proves the CLI, auth and model are reachable;
    a real turn can still hit the account's usage limit on its first message. When it does, the
@@ -126,6 +130,8 @@ When no ticket is left todo or in flight, go to the final phase (§7).
 - **Worktree,** from the current integration head, so it includes everything already merged:
   `git worktree add "$W/<slug>-t<NN>" -b crew/<slug>-t<NN> crew/<slug>`. Install dependencies if
   the gates need them.
+- **Model:** read the ticket's `**Size:**` and take the model and effort from
+  `models.implementerBySize`. State both in the dispatch.
 - **Record BASE:**
   1. `BASE=$(git -C "$W/<slug>-t<NN>" rev-parse HEAD)`.
   2. `node "$T" set <NN> in-progress --note "base <sha7>, <who builds it>"`.
@@ -281,10 +287,29 @@ When it holds:
 
 ## Models and cost
 
-- Every dispatch uses its configured role. Never leave a subagent on the session default.
+Measured on the first real run (7 tickets, 5 finished, 326M tokens): **implementers were 69% of the
+bill, the orchestrator 28%, and every review together 4%.** One implementer alone burned 85M in 308
+turns. So the dial that matters is the implementer's model and how long it runs — not the reviews.
+
+- **Pick the implementer's model by the ticket's Size**, from `models.implementerBySize`
+  (default: S and M → Sonnet, L → Opus), and the reviewer's from `models.reviewerBySize`. Pass the
+  model explicitly on every dispatch; never leave a subagent on the session default, which is the
+  most expensive model you have.
+- **Escalate on evidence, not on a hunch:** a ticket that comes back BLOCKED, or fails its second
+  fix round, earns the next model up. Record the escalation as a ruling.
+- **`limits.maxAgentTurns` (120) is a sizing signal, not a budget to spend.** An implementer still
+  working past it was given too much: tell it to report what is done and what is left, then split the
+  rest into a new ticket rather than letting it run to 300 turns.
+- **Explore once per run, not once per agent.** Before the first dispatch, send one `Explore`
+  subagent per area the spec touches and have it write `TASK/notes/<area>.md`: the files that matter,
+  the patterns to follow, the traps. Point every brief at those notes. Otherwise each fresh agent
+  re-reads the same code, and that is most of the early turns.
 - A dispatch prompt holds pointers and one ticket, never pasted history. Reports go to files, and
   final messages stay short.
 - Read a result before you re-dispatch. Every dispatch costs the user's limits.
+- **Parallelism does not save tokens, it spends them faster.** On one provider's quota, 3 agents at
+  once reach the limit 3× sooner. Lower `limits.parallel` when the quota matters more than the
+  wall clock.
 
 ## Common rationalizations
 

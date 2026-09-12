@@ -9,6 +9,11 @@ An implementer sees only its brief, so everything it needs must be in there or r
 - Paste the real gate commands from `.crew/config.json`.
 - Never paste secrets. Name the environment variables instead.
 - **One ticket per brief, and never the session's history.**
+- **Point at the run's exploration notes** (`TASK/notes/*.md`) in every brief. They were written
+  once for the whole run; without them each fresh agent pays again to learn the same code, which is
+  where most implementer tokens go.
+- **Say the turn budget out loud** (`limits.maxAgentTurns`): finish the smallest complete slice and
+  report, rather than growing into a 300-turn session.
 
 ## Implementer: backend (Codex Sol, or crew:backend-builder)
 

@@ -5,8 +5,9 @@ description: >-
   unavailable (usage limit, outdated CLI, auth, or missing model), when a project maps the backend
   role to Claude, or as the fresh implementer that escalates a stuck fix loop. Implements server
   code, APIs, and migration files in its assigned worktree from a crew brief. Not for ad-hoc use.
-model: claude-opus-5
+model: claude-sonnet-5
 effort: high
+maxTurns: 150
 color: green
 ---
 
@@ -33,6 +34,11 @@ than starting over.
   already exists on the base branch.
 - Use `crew:tdd` at the spec's seams, and `crew:verification-before-completion` before you report.
   Run all the gates.
+- **Watch your length.** Past roughly 100 tool calls, stop adding scope: finish the smallest
+  complete slice, then report what is done and what is left. A ticket that needs more than that was
+  sized wrong, and the controller will split it — that costs far less than a 300-turn session. Read
+  the run's `notes/*.md` before exploring the codebase yourself; they exist so you don't repeat
+  that work.
 
 ## Report
 

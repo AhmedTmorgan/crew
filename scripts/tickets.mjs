@@ -399,6 +399,7 @@ function parseArgs(argv) {
     if (!arg.startsWith('--')) { opts._.push(arg); continue; }
     const key = arg.slice(2);
     if (key === 'json') { opts.json = true; continue; }
+    if (key === 'help' || key === 'h') { opts.help = true; continue; }
     if (argv[i + 1] === undefined) fail(`--${key} needs a value`);
     opts[key] = argv[++i];
   }
@@ -407,7 +408,7 @@ function parseArgs(argv) {
 
 function main() {
   const opts = parseArgs(process.argv.slice(2));
-  const command = opts._[0];
+  const command = opts.help ? null : opts._[0];
   const commands = { list: cmdList, frontier: cmdFrontier, set: cmdSet, note: cmdNote, validate: cmdValidate, summary: cmdSummary, run: cmdRun };
   if (!commands[command]) {
     const doc = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0];

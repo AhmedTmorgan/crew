@@ -22,6 +22,11 @@ Adapted from Matt Pocock's `to-tickets` (MIT).
   tests). It is vertical, never one horizontal layer on its own.
 - A finished slice can be demoed or verified on its own.
 - Each slice fits a single fresh context window. When in doubt, split it.
+- **Size honestly, because size picks the model and the budget.** `S` is a couple of files, `M` a
+  handful, `L` a slice that genuinely spans the stack. An implementer is expected to finish inside
+  ~100 tool calls; on the first real run, the one oversized ticket ran 308 turns and cost 85M
+  tokens — a quarter of the whole run — while every review together cost 10M. If you hesitate
+  between M and L, split it into two tickets instead.
 - Prefactoring comes first: make the change easy, then make the easy change.
 - **Wide refactors** are the exception. A wide refactor is one mechanical change whose blast radius
   crosses the codebase (renaming a column, retyping a shared symbol). Sequence it as
