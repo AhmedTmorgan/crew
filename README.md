@@ -59,7 +59,7 @@ Start the session on **Fable 5.1, effort medium**.
 | `/crew:intake` · `/crew:spec` · `/crew:tickets` · `/crew:run` | The pipeline's stages, one at a time. Say "كمّل" / "continue" to resume a run |
 | `/crew:ship pr` · `/crew:ship release` | PR and CI · merge, deploy, and verify (release needs your approval) |
 | `/crew:bugs` | The problem journal |
-| `/crew:tdd` · `/crew:diagnosing-bugs` · `/crew:verification-before-completion` | Engineering discipline the builders use |
+| `/crew:tdd` · `/crew:diagnosing-bugs` · `/crew:verification-before-completion` · `/crew:context-economy` | Engineering discipline the builders use |
 | `/crew:debate-review <PR>` · `/crew:babysit-pr` | Two-model PR review · working through bot review rounds |
 
 ## How the long run stays alive
@@ -110,6 +110,13 @@ One oversized ticket took 308 turns and 85M tokens by itself — a quarter of th
 cheap; long implementer sessions are not.** That is why crew now picks the implementer's model from
 the ticket's size, explores the codebase once per run instead of once per agent, and treats a ticket
 that outgrows ~100 tool calls as a sizing mistake to split rather than a session to extend.
+
+What crew does about it: the ticket's size picks the implementer's model, the codebase is explored
+once per run instead of once per agent, and implementers are told to find code with the built-in
+`LSP` tool (symbols, references, ranged reads) rather than opening whole files — `documentSymbol` on
+an 806-line file replaces ~8,600 tokens of source with a symbol map. Install the language-server
+plugin for your stack (`typescript-lsp`, `pyright-lsp`, `gopls-lsp`, …); `crew:setup` checks for it.
+The rules are in `/crew:context-economy`.
 
 Use it accordingly:
 - **Worth it** for work with several independent slices, where review and a written record matter,

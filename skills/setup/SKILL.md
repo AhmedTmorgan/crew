@@ -19,6 +19,19 @@ node --version; git --version; gh auth status; codex --version
 node "${CLAUDE_PLUGIN_ROOT}/scripts/codex-run.mjs" --probe
 ```
 
+**Code intelligence is a token lever, so check it here.** Crew's implementers are told to find code
+with the `LSP` tool instead of reading whole files, which needs a language server for this project's
+language:
+
+- TypeScript/JavaScript → the `typescript-lsp` plugin (`/plugin install typescript-lsp@claude-plugins-official`)
+  plus `npm i -g typescript-language-server typescript`. Python → `pyright-lsp`, Go → `gopls-lsp`,
+  Rust → `rust-analyzer-lsp`, and so on.
+- The server starts in the workspace, so the project's own toolchain must be installed there
+  (for TypeScript: `node_modules/typescript` in each worktree, which the install command provides).
+- Verify it: an `LSP` `documentSymbol` call on a real source file should return symbols, not an
+  error. If it errors, tell the user which plugin or package is missing — don't leave the agents
+  guessing and reading whole files.
+
 - If Codex is missing or reports `outdated_cli`, tell the user the exact fix
   (`npm i -g @openai/codex@latest`) and ask before running it.
 - If `gh` is not authenticated, the user must run `gh auth login` themselves.

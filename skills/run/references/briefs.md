@@ -14,6 +14,8 @@ An implementer sees only its brief, so everything it needs must be in there or r
   where most implementer tokens go.
 - **Say the turn budget out loud** (`limits.maxAgentTurns`): finish the smallest complete slice and
   report, rather than growing into a 300-turn session.
+- **Name the model and effort** you dispatched with (from `models.implementerBySize`), and tell the
+  agent to follow `crew:context-economy`: LSP symbols and ranged reads instead of whole files.
 
 ## Implementer: backend (Codex Sol, or crew:backend-builder)
 

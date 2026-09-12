@@ -82,10 +82,13 @@ finished work.
 3. `git worktree add "$W/<slug>" -b crew/<slug> origin/<base>`: the integration tree.
 4. Install dependencies there if the gates need them.
 5. Record the base commit: `node "$T" note "base <sha7>, integration tree $W/<slug>"`.
-6. **Explore once, for every agent.** Send one `Explore` subagent per area the spec touches (in
-   parallel, cheap model) and have each write `TASK/notes/<area>.md`: the files that matter, the
-   patterns to follow, the traps, the existing tests. Every brief points at these notes, so no
-   implementer pays to rediscover the same code.
+6. **Explore once, for every agent** (see `crew:context-economy`). Send one `Explore` subagent per
+   area the spec touches (in parallel, cheap model) and have each write `TASK/notes/<area>.md`: the
+   files that matter, the patterns to follow, the traps, the existing tests. For an area nobody has
+   mapped, add a compressed map beside it:
+   `npx --yes repomix <dir> --compress --stdout --style plain > TASK/notes/<area>.map.txt`
+   (measured 62% smaller than the raw files). Every brief points at these notes, so no implementer
+   pays to rediscover the same code.
 7. Probe the Codex roles with `node "$C" --probe`, and record the routing in the ledger. Any Codex
    role that isn't ok uses its fallback agent for the whole run. Tell the user in one line.
    **A passing probe is not a promise of quota.** It proves the CLI, auth and model are reachable;
