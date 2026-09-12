@@ -36,6 +36,7 @@
     "maxAgentTurns": 120
   },
   "//models": "Implementer model and effort per ticket Size. Measured on the first real run: implementers were 69% of the whole token bill and reviewers 4%, so this table is the main cost dial. A ticket that needs more than limits.maxAgentTurns was sized wrong — split it instead of buying a bigger model.",
+  "//reviewRule": "THE REVIEWER IS NEVER WEAKER THAN THE IMPLEMENTER. A previous-generation model of the same family is not independence, it is a downgrade — Opus 4.8 and Opus 5 cost the same $5/$25 per Mtok, so reviewing Opus 5's work with 4.8 buys nothing and loses capability. Independence comes from a DIFFERENT family (Codex gpt-6-astra by default); when that is unavailable, review with the implementer's tier or one above it.",
   "models": {
     "implementerBySize": {
       "S": { "model": "sonnet", "effort": "medium" },

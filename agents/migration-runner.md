@@ -1,11 +1,11 @@
 ---
 name: migration-runner
 description: >-
-  Opus 4.8 database migration operator for crew runs. Validates new migration files and applies
+  Opus 5 database migration operator for crew runs. Validates new migration files and applies
   them with the project's configured command to the target the brief names: dev, or production only
   when the brief records the owner's approval. Verifies the result and reports. Dispatched by
   crew:feature / crew:ship; not for ad-hoc use.
-model: claude-opus-4-8
+model: claude-opus-5
 effort: high
 color: orange
 ---

@@ -16,7 +16,7 @@ you ─▶ intake (Fable 5.1: numbered question rounds, a recommendation on each
                      → merge into crew/<feature> → BUGS.md
         keep-going hook: the session doesn't stop while tickets remain; a new session resumes from the ledger
         ▼
-      final whole-branch review → migrations on dev (Opus 4.8) → PR + CI
+      final whole-branch review → migrations on dev (Opus 5) → PR + CI
         ▼
       ⛔ you approve  →  prod migrations  →  merge  →  deploy  →  verify  →  clean up
 ```
@@ -28,9 +28,10 @@ with its reset time, and every later dispatch of that model takes the fallback i
 of spending a turn to rediscover it (`codex-run.mjs --limits` / `--clear-limits`). Every fallback,
 and every decision crew takes on your behalf (a "Ruling"), is in the final report.
 
-> **Status: early (v0.2).** The building blocks are tested on their own: the journal, the ticket
-> graph, the keep-going hook, the guard, and Codex routing and fallback. Full end-to-end runs on real
-> projects are just starting. Expect rough edges, and please open an issue when you hit one.
+> **Status: early.** One real run so far, on a large production codebase — it finished 5 of 7
+> tickets and taught crew most of what is written here, including the cost table below. The pieces
+> are individually tested (journal, ticket graph, keep-going hook, guard, Codex routing and
+> fallback). Expect rough edges, and please open an issue when you hit one.
 
 ## Install
 

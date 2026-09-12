@@ -88,7 +88,7 @@ Role defaults:
 - backend: Codex `gpt-5.6-sol`, effort high
 - frontend and integration: Opus 5
 - review: Codex `gpt-6-astra`, effort high
-- migrations: Opus 4.8
+- migrations: Opus 5
 
 Change a role only if the user asks. For example, to run the backend on Claude only:
 `"backend": {"implementer": "agent", "agent": "crew:backend-builder"}`.

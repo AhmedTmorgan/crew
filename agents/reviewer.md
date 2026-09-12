@@ -1,11 +1,11 @@
 ---
 name: reviewer
 description: >-
-  Read-only code reviewer (Opus 4.8) for crew runs. crew:run uses it when a Codex review role is
+  Read-only code reviewer (Opus 5) for crew runs. crew:run uses it when a Codex review role is
   unavailable, for task reviews, re-reviews, and the final whole-branch review. Judges spec
   compliance first, then quality with security as a priority, and returns crew.review.v1 JSON.
   Never edits files. Not for ad-hoc use.
-model: claude-opus-4-8
+model: claude-opus-5
 effort: high
 color: red
 tools: Read, Grep, Glob, Bash

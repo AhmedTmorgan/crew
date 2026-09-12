@@ -298,6 +298,11 @@ turns. So the dial that matters is the implementer's model and how long it runs 
   (default: S and M → Sonnet, L → Opus), and the reviewer's from `models.reviewerBySize`. Pass the
   model explicitly on every dispatch; never leave a subagent on the session default, which is the
   most expensive model you have.
+- **The reviewer is never weaker than the implementer.** Independence comes from a different model
+  *family* — Codex `gpt-6-astra` reviewing Claude's work — not from an older Claude. A previous
+  generation of the same family (Opus 4.8 against Opus 5) is a downgrade at identical price, not a
+  second opinion. When Codex is unavailable, review at the implementer's tier or one above it:
+  Sonnet implementation → Sonnet or Opus review; Opus implementation → Opus review, never below.
 - **Escalate on evidence, not on a hunch:** a ticket that comes back BLOCKED, or fails its second
   fix round, earns the next model up. Record the escalation as a ruling.
 - **`limits.maxAgentTurns` (120) is a sizing signal, not a budget to spend.** An implementer still

@@ -4,7 +4,7 @@ description: >-
   Run a whole feature, or a whole phase of a project, through the crew from start to finish. Fable
   grills the user about the entire thing once (intake), writes the spec, and splits it into tickets.
   After a single go, crew:run builds everything autonomously: Codex Sol on the backend, Opus 5 on
-  the frontend, Codex Astra reviewing every ticket, Opus 4.8 on migrations. It keeps going for hours
+  the frontend, Codex Astra reviewing every ticket, Opus 5 on migrations. It keeps going for hours
   if needed, across compaction and new sessions, and stops only at the deploy approval. Use when the
   user wants something built end to end ("شغّل الـ crew", "/crew:feature", "build this with the
   team"). Not for one-file fixes.
@@ -81,5 +81,5 @@ production commands themselves.
 
 ## 6. Release (after yes)
 
-Run `crew:run` §7 step 6: production migrations (Opus 4.8), then `crew:ship` release (merge,
+Run `crew:run` §7 step 6: production migrations (Opus 5), then `crew:ship` release (merge,
 deploy, verify), then journal, cleanup, and the final report.
