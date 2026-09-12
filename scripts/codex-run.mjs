@@ -89,7 +89,10 @@ function gitRoot(dir) {
 function loadRoles(dir) {
   const defaults = readJson(path.join(PLUGIN_ROOT, 'templates', 'crew.config.json'))?.roles || {};
   const project = readJson(path.join(gitRoot(dir), '.crew', 'config.json'))?.roles || {};
-  return { ...defaults, ...project };
+  // Per-role merge: overriding one field (say backend.model) keeps implementer, effort, fallback.
+  const roles = { ...defaults };
+  for (const [name, role] of Object.entries(project)) roles[name] = { ...defaults[name], ...role };
+  return roles;
 }
 
 function roleConfig(roles, name) {

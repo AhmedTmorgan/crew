@@ -1,7 +1,7 @@
 {
   "name": "crew",
   "displayName": "crew",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A multi-model engineering team for Claude Code: one grilling conversation, then an autonomous run that splits the feature into tickets and builds them for hours across sessions — Codex and Opus in parallel worktrees, cross-model review on every ticket, Opus migrations, PR + CI — stopping only for the owner's deploy approval. One problem journal (BUGS.md) per project.",
   "author": { "name": "Ahmed (AhmedTmorgan)" },
   "license": "MIT",

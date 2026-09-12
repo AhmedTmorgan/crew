@@ -99,10 +99,18 @@ finished work.
 2. Dispatch **every** ready ticket in one message, in the background (§2).
 3. While work is in flight, keep doing local bookkeeping. When you're idle, end the turn. The
    completion notifications will wake you.
-   - The keep-going hook lets you wait only if the in-flight tickets are marked `in-progress`,
-     `review`, or `fixing`, or you ran `run wait`.
+   - The keep-going hook lets you wait only while in-flight tickets are genuinely alive: no report
+     newer than the ledger's last word on them, and file activity within `keepGoing.staleMinutes`
+     (45 by default). A finished report nobody acted on, or a silent worker, brings you back.
    - Never poll tightly. When you come back after a long wait, reconcile: list your live children
-     and chase any that finished without reporting.
+     and chase any that finished without reporting. A worker that is gone gets re-dispatched from
+     what its worktree holds, with a ruling; one that is alive but slow gets
+     `tickets.mjs run wait --reason "T<NN> still working: <what>"`.
+   - **Writes to external services** (creating something at a provider's API, sending a message,
+     changing a third-party account) are stop class 3, even as a "live proof". Prove against a
+     sandbox, a dry run, or a read-only call; if only a real write can prove it, pause and ask, and
+     never do it on a customer's account. Projects list such commands in
+     `guard.externalWritePatterns` so the guard prompts on them.
 4. As each ticket reports: verify → review → fix loop → merge → complete (§3–§6).
 5. Go back to step 1.
 
@@ -210,6 +218,13 @@ When it holds:
      it, and carry that ruling into their dispatches.
 
    Judge only at the cap, and ledger every judgment. A silent discard is forbidden.
+
+   **Hard limit — never parkable:** a `critical` finding, or any finding with `"security": true`.
+   These cannot be deferred by a ruling, at any round count. Either it gets fixed (escalate the
+   model, split the ticket, or fix the plan defect that causes it), or the ticket goes
+   `needs-human` with a journal entry (`crew:bugs`, category `security` or severity `critical`)
+   and the run pauses with the reason. `tickets.mjs run phase ship` refuses mechanically while any
+   such journal entry is open, however many rounds ran.
 
 ## 6. Merge and complete
 

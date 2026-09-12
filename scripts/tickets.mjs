@@ -59,8 +59,12 @@ const readJson = file => {
 export function config(root) {
   const defaults = readJson(path.join(PLUGIN_ROOT, 'templates', 'crew.config.json')) || {};
   const project = readJson(path.join(root, '.crew', 'config.json')) || {};
+  // A project overrides one field of a role (say roles.backend.model) without losing the rest of it.
+  const roles = { ...defaults.roles };
+  for (const [name, role] of Object.entries(project.roles || {})) roles[name] = { ...defaults.roles?.[name], ...role };
   return {
     ...defaults, ...project,
+    roles,
     limits: { ...defaults.limits, ...project.limits },
     keepGoing: { ...defaults.keepGoing, ...project.keepGoing },
   };
@@ -138,10 +142,14 @@ function findTicket(tickets, id) {
 
 // ---------- ledger and run state ----------
 
-const stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ');
+// Local time, so the ledger reads the way the owner's clock does; `parseStamp` inverts it.
+const pad = n => String(n).padStart(2, '0');
+const stamp = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+export const parseStamp = s => { const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/); return m ? new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]) : null; };
+export const ledgerPath = (root, slug) => path.join(taskDir(root, slug), 'ledger.md');
 
 export function ledgerAppend(root, slug, line) {
-  const file = path.join(taskDir(root, slug), 'ledger.md');
+  const file = ledgerPath(root, slug);
   if (!fs.existsSync(file)) writeAtomic(file, `# crew ledger — task: ${slug}\n\n`);
   fs.appendFileSync(file, `- ${stamp()} · ${line.replace(/\s*\n\s*/g, ' ')}\n`);
 }
@@ -291,6 +299,40 @@ function cmdSummary(root, slug) {
   if (s.stuck) console.log('STUCK: tickets remain but none is ready or in flight (blocked by needs-human or dropped work?)');
 }
 
+/** Worktree folder crew uses for this project: <parent>/<repo>-crew */
+export const crewDir = root => path.join(path.dirname(root), `${path.basename(root)}-crew`);
+
+/**
+ * Open problems that forbid shipping, whatever the fix-loop count: any open critical entry, and any
+ * open security entry of severity high or critical, in the project's journal or the integration
+ * tree's copy. Plus parked findings the ledger marks critical or security.
+ */
+export function releaseBlockers(root, slug) {
+  const blockers = [];
+  const bugsName = config(root).bugsFile || 'BUGS.md';
+  const files = [path.join(root, bugsName), path.join(crewDir(root), slug, bugsName)].filter(f => fs.existsSync(f));
+  const bugs = path.join(PLUGIN_ROOT, 'scripts', 'bugs.mjs');
+  const seen = new Set();
+  for (const file of files) {
+    const r = spawnSync(process.execPath, [bugs, 'list', '--status', 'all', '--json', '--file', file], { encoding: 'utf8' });
+    let rows = [];
+    try { rows = JSON.parse(r.stdout || '[]'); } catch { /* unreadable journal: say so */ blockers.push(`cannot read ${file}`); }
+    for (const b of rows) {
+      if (!['open', 'in-progress'].includes(b.status) || seen.has(b.id)) continue;
+      const critical = b.severity === 'critical';
+      const security = b.category === 'security' && ['critical', 'high'].includes(b.severity);
+      if (critical || security) { seen.add(b.id); blockers.push(`${b.id} [${b.severity}, ${b.category}] ${b.title} — ${b.status}`); }
+    }
+  }
+  const ledger = ledgerPath(root, slug);
+  if (fs.existsSync(ledger)) {
+    for (const line of fs.readFileSync(ledger, 'utf8').split('\n')) {
+      if (/parked/i.test(line) && /critical|security/i.test(line) && !/(unparked|resolved|fixed) /i.test(line)) blockers.push(`ledger: ${line.replace(/^- /, '').slice(0, 160)}`);
+    }
+  }
+  return blockers;
+}
+
 function cmdRun(root, slug, opts) {
   const action = opts._[1];
   const run = readRun(root, slug) || {};
@@ -321,14 +363,24 @@ function cmdRun(root, slug, opts) {
     case 'phase': {
       const phase = opts._[2];
       if (!PHASES.includes(phase)) fail(`unknown phase "${phase}" (use: ${PHASES.join(', ')})`);
+      if (['ship', 'awaiting-approval', 'releasing', 'done'].includes(phase)) {
+        const blockers = releaseBlockers(root, slug);
+        if (blockers.length) {
+          ledgerAppend(root, slug, `phase ${phase} REFUSED: open critical/security problems — ${blockers.join(' | ')}`);
+          fail(`cannot enter phase "${phase}": open critical or security problems block any release, however many fix rounds ran:\n  - ${blockers.join('\n  - ')}\nFix them (and mark the journal entries fixed/mitigated with a note), or the owner decides in chat.`);
+        }
+      }
       save({ phase, waiting: null, noProgress: 0, ...(phase === 'done' ? { status: 'done' } : {}) }, `phase → ${phase}`);
       if (phase === 'done') fs.rmSync(activeFile(root), { force: true });
       break;
     }
-    case 'finish':
+    case 'finish': {
+      const blockers = releaseBlockers(root, slug);
+      if (blockers.length) fail(`cannot finish: open critical or security problems — ${blockers.join(' | ')}`);
       save({ phase: 'done', status: 'done', waiting: null }, 'run finished');
       fs.rmSync(activeFile(root), { force: true });
       break;
+    }
     case 'status':
       console.log(JSON.stringify({ run: readRun(root, slug), summary: summarize(root, slug) }, null, 2));
       return;

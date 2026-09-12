@@ -65,10 +65,13 @@ Start the session on **Fable 5.1, effort medium**.
   `.crew/tasks/<slug>/ledger.md` records every start, verdict, fix round, ruling, and completion.
   After compaction, or in a brand-new session, crew trusts the ledger and `git log` over memory,
   and never redoes a finished ticket.
-- **Keep-going hook** (Stop): while the run has work and nothing is in flight, the session isn't
-  allowed to stop, and it's told exactly which tickets are ready. It lets the session wait while
-  agents are working, stops at the approval gate, is bound to the session that owns the run, and
-  pauses itself after 3 turns without progress, so it can never spin forever.
+- **Keep-going hook** (Stop): while the run has work, the session isn't allowed to stop, and it's
+  told exactly which tickets are ready. It lets the session wait only while dispatched work is
+  **provably alive** — no report newer than the ledger's last word on that ticket, and file activity
+  within `keepGoing.staleMinutes` (45 by default). A finished report nobody acted on, or a worker
+  that went silent, brings the session back instead of letting the run idle. It stops at the
+  approval gate, is bound to the session that owns the run, and pauses itself after 3 turns without
+  progress, so it can never spin forever.
 - **SessionStart hook:** announces an unfinished run in a new session and how to resume it.
 - **Only four things stop a run:** something irreversible, something security-sensitive, a side
   effect outside the crew branches (merge, deploy, production), or a plan so broken every path is
@@ -99,8 +102,23 @@ session to record what was learned.
 
 ## Safety rails
 
-- **Guard hook:** asks you before production deploys, production migrations, and direct pushes to
-  the base branch. Blocks force-pushes to the base branch.
+- **Guard hook** (PreToolUse on Bash/PowerShell):
+  - **Asks you** before anything that changes production or shared state: the project's configured
+    deploy and production-migration commands; Vercel, Netlify, Fly, Railway, Cloudflare, Firebase,
+    `supabase db push/reset` (anything that is not `--local` or `--dry-run`), Prisma, terraform,
+    kubectl and helm; `gh pr merge`; repository visibility, protection, or deletion; a merge,
+    rebase or commit made while the base branch is checked out; a push to the base branch;
+    `reset --hard` and `clean -fd`; and any command matching `guard.externalWritePatterns` — the
+    project's list of scripts that write to third-party APIs, so a "live proof" never creates
+    something at Meta, Stripe, or Shopify without you.
+  - **Blocks** force-pushing or deleting the base branch.
+  - **It matches command text, so it is a second lock, not a permission system.** `crew:setup`
+    offers to enable real branch protection on the forge, which is the lock that holds when a
+    command slips past the text match.
+- **A critical or security finding can never be parked.** Fix rounds end, but the finding doesn't:
+  it is fixed, or the ticket goes `needs-human` with a journal entry. `tickets.mjs run phase ship`
+  refuses mechanically while any open critical entry — or any open high/critical security entry —
+  is in `BUGS.md`, whatever was approved earlier.
 - **Implementers never commit, push, merge, deploy, or touch production.** The controller commits
   after re-running the gates itself, and reviews run read-only.
 - **Worktrees live outside the repo** (`<repo>-crew/`) and are removed as tickets merge.

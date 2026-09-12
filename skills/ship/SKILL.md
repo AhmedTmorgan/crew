@@ -67,7 +67,10 @@ Approval must be the user's own words in this conversation, given after they saw
 also prompts on the production commands themselves. That is a second lock, not a substitute.
 
 1. **Re-check.** The PR is mergeable, CI is green on the latest head, and nothing was pushed after
-   the approval.
+   the approval. **No open critical problem and no open high/critical security entry** in
+   `BUGS.md` — run `node "${CLAUDE_PLUGIN_ROOT}/scripts/bugs.mjs" list --status open` and look. If
+   there is one, there is no release, whatever was approved earlier: fix it, or the owner marks it
+   `mitigated` with a note saying why, in their own words.
 2. **Production migrations,** if any: dispatch `crew:migration-runner` with target `migrateProd`. It
    stops on the first error. Don't deploy if migrations failed. Report and ask.
 3. **Merge.** Use the repo's allowed method:

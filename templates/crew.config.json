@@ -16,7 +16,8 @@
   },
   "guard": {
     "askPatterns": [],
-    "denyPatterns": []
+    "denyPatterns": [],
+    "externalWritePatterns": []
   },
   "roles": {
     "orchestrator": { "implementer": "main", "model": "claude-fable-5-1", "effort": "medium" },
@@ -35,6 +36,7 @@
   },
   "keepGoing": {
     "maxNoProgress": 3,
-    "maxContinuations": 300
+    "maxContinuations": 300,
+    "staleMinutes": 45
   }
 }

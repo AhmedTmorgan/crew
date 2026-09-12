@@ -45,6 +45,20 @@ best evidence of which gates the project actually trusts.
 - `baseBranch`: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`.
 - `guard.askPatterns`: extra command substrings that must always prompt the user (production
   scripts, production DB CLIs). `guard.denyPatterns`: substrings that must never run.
+  `guard.externalWritePatterns`: substrings of commands that write to third-party services (a
+  provider's API scripts, `scripts/probes/*-create*`, an SDK CLI) — the guard prompts on them, so
+  a "live proof" never creates something at Meta, Stripe, or Shopify without the owner.
+- **The guard matches command text; it is a second lock, not a permission system.** Offer real
+  branch protection on the forge, and enable it only after the user says yes:
+  ```bash
+  gh api -X POST repos/{owner}/{repo}/rulesets --input - <<'JSON'
+  {"name":"crew: PRs only on <base>","target":"branch","enforcement":"active",
+   "conditions":{"ref_name":{"include":["~DEFAULT_BRANCH"],"exclude":[]}},
+   "rules":[{"type":"deletion"},{"type":"non_fast_forward"},{"type":"pull_request","parameters":{"required_approving_review_count":0,"dismiss_stale_reviews_on_push":false,"require_code_owner_review":false,"require_last_push_approval":false,"required_review_thread_resolution":false}}]}
+  JSON
+  ```
+  With this, even a command the guard misses cannot push to the base branch or delete it. Also
+  point the user at Claude Code's own permission rules (`/permissions`) for the same commands.
 - `limits.parallel`: how many tickets `crew:run` builds at once (default 3). Lower it on a slow
   machine, or when every worktree needs a heavy `install`.
 - `tracker`: `local` (the default: tickets are files) or `github` (also mirror the spec and tickets
