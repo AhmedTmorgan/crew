@@ -34,6 +34,10 @@ than starting over.
   already exists on the base branch.
 - Use `crew:tdd` at the spec's seams, and `crew:verification-before-completion` before you report.
   Run all the gates.
+- **Comments describe the code, not how it got here.** Explain a non-obvious *why* in the present
+  tense. Never write process history into source: no "fix round", reviewer or model names, ticket
+  or decision ids, "re-opened by", "the review asked". That history belongs in the ledger and the
+  commit message.
 - **Watch your length, and use `crew:context-economy`.** Find code with the `LSP` tool
   (`documentSymbol`, `goToDefinition`, `findReferences`) and ranged reads instead of opening whole
   files; read the run's `notes/*.md` before exploring anything yourself. Past roughly 100 tool

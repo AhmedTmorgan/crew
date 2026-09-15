@@ -185,6 +185,16 @@ Then verify it yourself:
 1. `git -C <wt> status` and the diff against BASE.
 2. Run the gates from the config yourself.
 3. Check the scope against the ticket's Touches.
+4. **No process history in the source.** Crew work was caught leaving review history in code
+   comments ("re-opened by the reviewer in fix round 1"). Check the added lines:
+   ```bash
+   git -C <wt> diff <BASE> -U0 -- '*.ts' '*.tsx' '*.js' '*.css' '*.sql' ':!.crew/*' \
+     | grep -nE '^\+.*(fix round|re-?opened by|ticket T?[0-9]{2}\b|\bT[0-9]{2}\b[^:0-9]|directive [0-9]|\bAstra\b|\bcrew\b)'
+   ```
+   (Checked against real history: it flagged 33 such lines across three crew PRs and none in six
+   non-crew PRs, and it ignores ISO timestamps like `T00:00`.)
+   Any hit goes back to the implementer as a minor finding: rewrite the comment as a present-tense
+   *why*, or delete it. The history stays in the ledger and the commit message.
 
 When it holds:
 1. `git -C <wt> add -A`.
